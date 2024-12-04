@@ -1,29 +1,39 @@
 #include "minitalk.h"
 
-/*
-Prog execution : ./server
-*/
-ft_signal(int sign, void *handler, int use_signinfo)
+int		main(void)
 {
+	struct sigaction	sa;
 
+	ft_printf("(#~>~#~>~#~>~#~>:. Welcome to server %d .:<~#~<~#~<~#~<~#)\n", getpid());
+	set_sigaction(&sa, &handle_sigfrom_client);
+	while (1)
+		sleep(1);
+	return (0);
 }
 
-void    ft_sighandler(int signo, siginfo_t *info, void *more_info)
+void	handle_sigfrom_client(int signum, siginfo_t *info, void *other)
 {
-    (void)more_info;
+	static char	letter = '\0';
+	static int	count = -1;
 
-
-}
-
-
-int main(void)
-{
-    printf("Server PID : %d\n", getpid());
-    ft_signal(SIGUSR1, ft_sighandler, 1);
-    while (1)
-    {
-        pause();
-    }
-
-    return (EXIT_SUCCESS);
-}
+	(void) other;
+	if (kill(info->si_pid, 0) < 0)
+	{
+		printf ("Cannot send back signal to PID : %d\n", info->si_pid);
+		exit (1);
+	}
+	if (count < 0 && letter == '\0')
+		ft_printf("\nMessage from %d : ", info->si_pid);
+	if (count < 0)
+		count = 7;
+	if (signum == SIGUSR1)
+		letter |= 1 << count;
+	else if (signum == SIGUSR2)
+		letter &= ~(1 << count);
+	if (count == 0 && letter != '\0')
+		ft_putchar_fd(letter, 1);
+	else if (count == 0 && letter == '\0')
+		kill (info->si_pid, SIGUSR2);
+	count--;
+	kill (info->si_pid, SIGUSR1);
+}	
