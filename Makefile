@@ -1,16 +1,20 @@
 
-CLIENT = client.c helper_functions.c
+SRC_FOLD = ./srcs/
+CLIENT = $(addprefix $(SRC_FOLD), client.c helper_functions.c)
 CLIENT_BIN = client
-SRV = server.c helper_functions.c
+SRV = $(addprefix $(SRC_FOLD), server.c helper_functions.c)
 SRV_BIN = server
 
-LIB = libft.a
-CPPFLAGS = -I. -I./libft/includes -L./libft 
-HEADERS = minitalk.h ./libft/includes/libft.h
+LIB_A = libft.a
+LIB_DIR = ./libft/
+LIB = $(LIB_DIR)$(LIB_A)
+
+HEADERS_FOLD = includes
+CPPFLAGS = -I./$(HEADERS_FOLD) -I$(LIB_DIR)/$(HEADERS_FOLD) 
+HEADERS = ./$(HEADERS_FOLD)/minitalk.h ./$(LIB_DIR)/$(HEADERS_FOLD)/libft.h
+
 CCFLAGS = -Wall -Werror -Wextra
-LFLAGS = -l:$(LIB)
-
-
+LFLAGS = -L$(LIB_DIR) -l:$(LIB_A)
 
 all : $(LIB) client server 
 
