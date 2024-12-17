@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qzoli <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 09:13:18 by qzoli             #+#    #+#             */
+/*   Updated: 2024/12/17 09:13:19 by qzoli            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
-int		main(void)
+int	main(void)
 {
-	struct sigaction	sa;
+	t_sa	sa;
 
-	ft_printf("(#~>~#~>~#~>~#~>:. Welcome to server %d .:<~#~<~#~<~#~<~#)\n", getpid());
+	ft_printf("(#~>~#~>:. Welcome to server %d .:<~#~<~#)\n", getpid());
 	set_sigaction(&sa, &handle_sigfrom_client);
 	while (1)
 		sleep(1);
@@ -36,4 +48,4 @@ void	handle_sigfrom_client(int signum, siginfo_t *info, void *other)
 		kill (info->si_pid, SIGUSR2);
 	count--;
 	kill (info->si_pid, SIGUSR1);
-}	
+}

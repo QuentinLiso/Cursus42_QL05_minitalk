@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qzoli <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 09:13:03 by qzoli             #+#    #+#             */
+/*   Updated: 2024/12/17 09:13:05 by qzoli            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
 static int	g_srv_received_bit;
 
-int		main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	struct sigaction	sa;
+	t_sa	sa;
 	pid_t	s_pid;
 
 	if (ac != 3)
@@ -38,6 +50,18 @@ void	handle_sigfrom_srv(int signum, siginfo_t *info, void *other)
 	}
 }
 
+void	send_str_to_srv(int pid, char *str)
+{
+	unsigned int	len;
+
+	len = 0;
+	if (!str)
+		return ;
+	while (str[len])
+		send_char_to_srv(pid, str[len++]);
+	send_char_to_srv(pid, (char)0);
+}
+
 void	send_char_to_srv(int pid, char c)
 {
 	int	count;
@@ -59,16 +83,4 @@ void	send_char_to_srv(int pid, char c)
 		while (g_srv_received_bit == 0)
 			usleep (30);
 	}
-}
-
-void	send_str_to_srv(int pid, char *str)
-{
-	unsigned int	len;
-
-	len = 0;
-	if (!str)
-		return ;
-	while (str[len])
-		send_char_to_srv(pid, str[len++]);
-	send_char_to_srv(pid, (char)0);
 }
